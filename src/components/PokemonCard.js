@@ -1,14 +1,26 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import "../App.css";
+import React from "react";
 
 const PokemonCard = (props) => {
-  return <div />;
-};
+  function capitalize(str) {
+    return str[0].toUpperCase() + str.slice(1);
+  }
 
-// shuffleCards()
-// difficulty (num of cards)
-// include/exclude regions in settings
-// reset button
-// pick pokemon from array of generations
+  return (
+    <div
+      className="card"
+      onClick={() => {
+        props.attemptToCatch(props.pokemon);
+      }}
+    >
+      <img
+        width="100%"
+        src={props.pokemon.sprites.front_default}
+        alt={props.pokemon.name}
+      />
+      <span>{capitalize(props.pokemon.name)}</span>
+    </div>
+  );
+};
 
 export default PokemonCard;

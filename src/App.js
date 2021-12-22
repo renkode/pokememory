@@ -1,6 +1,7 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import PokemonCard from "./components/PokemonCard";
 
 function getRandomInt(max) {
   // between 1 and max (inclusive of both)
@@ -21,7 +22,7 @@ function App() {
   const [slots, setSlots] = useState(6);
   const [pokemon, setPokemon] = useState([]);
 
-  async function getPokemon() {
+  async function fetchPokemon() {
     const ids = generateIds(slots, 898);
     let promises = [];
 
@@ -35,8 +36,9 @@ function App() {
   }
 
   function resetPokemon() {
+    setScore(0);
     setPokemon([]);
-    getPokemon();
+    fetchPokemon();
   }
 
   function shufflePokemon() {
@@ -68,33 +70,47 @@ function App() {
     if (pokemon.caught) {
       gameOver();
     } else {
-      pokemon.caught = !pokemon.caught;
+      pokemon.caught = true;
       setScore(score + 1);
       shufflePokemon();
     }
   }
 
+  function handleChange(e) {
+    setSlots(e.target.value);
+  }
+
   // fetch pokemon on component mount
   useEffect(() => {
-    getPokemon();
+    fetchPokemon();
   }, []);
 
   return (
     <div>
-      <div>{score}</div>
+      <div>Score: {score}</div>
+      <label for="cards">Number of Pokemon:</label>
+      <select name="cards" id="cards" onChange={handleChange}>
+        <option value="6" selected>
+          6
+        </option>
+        <option value="12">12</option>
+        <option value="18">18</option>
+        <option value="24">24</option>
+        <option value="30">30</option>
+      </select>
       <button onClick={resetPokemon}>Reset</button>
-      {pokemon.map((mon, index) => {
-        return (
-          <div
-            key={index}
-            onClick={() => {
-              attemptToCatch(mon);
-            }}
-          >
-            <img src={mon.sprites.front_default} alt={mon.name} />
-          </div>
-        );
-      })}
+
+      <div className="poke-wrapper">
+        {pokemon.map((mon, index) => {
+          return (
+            <PokemonCard
+              key={index}
+              pokemon={mon}
+              attemptToCatch={attemptToCatch}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

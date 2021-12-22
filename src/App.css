@@ -1,3 +1,21 @@
-.gray {
-  background-color: gray;
+.poke-wrapper {
+  max-width: 950px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, 150px);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  box-shadow: 0px 0px 4px black;
+  border-radius: 10%;
+  padding: 4px;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: scale(110%, 110%);
 }
