@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/pokememory/static/css/main.67d21d55.css",
-    "main.js": "/pokememory/static/js/main.a0a1d113.js",
+    "main.css": "/pokememory/static/css/main.6f435a8f.css",
+    "main.js": "/pokememory/static/js/main.d77712ab.js",
     "index.html": "/pokememory/index.html",
-    "main.67d21d55.css.map": "/pokememory/static/css/main.67d21d55.css.map",
-    "main.a0a1d113.js.map": "/pokememory/static/js/main.a0a1d113.js.map"
+    "main.6f435a8f.css.map": "/pokememory/static/css/main.6f435a8f.css.map",
+    "main.d77712ab.js.map": "/pokememory/static/js/main.d77712ab.js.map"
   },
   "entrypoints": [
-    "static/css/main.67d21d55.css",
-    "static/js/main.a0a1d113.js"
+    "static/css/main.6f435a8f.css",
+    "static/js/main.d77712ab.js"
   ]
 }
