@@ -12,36 +12,38 @@ function getRandomIntInclusive(min, max) {
 }
 
 function findMinAndMax(arr) {
-  let min = 898;
+  let min = 999;
   let max = 1;
   for (let i = 0; i < arr.length; i++) {
+    if (!arr[i].enabled) continue;
     if (min > arr[i].min) min = arr[i].min;
     if (max < arr[i].max) max = arr[i].max;
   }
-  console.log(`min:  ${min}, max: ${max}`);
+  //console.log(`min:  ${min}, max: ${max}`);
   return { min, max };
 }
 
 function App() {
+  const initialGens = [
+    { generation: 1, min: 1, max: 151, enabled: true },
+    { generation: 2, min: 152, max: 251, enabled: true },
+    { generation: 3, min: 252, max: 386, enabled: true },
+    { generation: 4, min: 387, max: 493, enabled: true },
+    { generation: 5, min: 494, max: 649, enabled: true },
+    { generation: 6, min: 650, max: 721, enabled: true },
+    { generation: 7, min: 722, max: 809, enabled: true },
+    { generation: 8, min: 810, max: 898, enabled: true },
+  ];
   const [pokeballs, setPokeballs] = useState(6);
   const [slots, setSlots] = useState(6);
   const [pokemon, setPokemon] = useState([]);
-  const [generations, setGenerations] = useState([
-    { generation: 1, min: 1, max: 151 },
-    { generation: 2, min: 152, max: 251 },
-    { generation: 3, min: 252, max: 386 },
-    { generation: 4, min: 387, max: 493 },
-    { generation: 5, min: 494, max: 649 },
-    { generation: 6, min: 650, max: 721 },
-    { generation: 7, min: 722, max: 809 },
-    { generation: 8, min: 810, max: 898 },
-  ]);
+  const [generations, setGenerations] = useState(initialGens);
   const [loading, setLoading] = useState(true);
 
   function isInGenerationsRange(num) {
     let isIncluded = false;
     generations.forEach((gen) => {
-      if (num >= gen.min && num <= gen.max) isIncluded = true;
+      if (gen.enabled && num >= gen.min && num <= gen.max) isIncluded = true;
     });
     return isIncluded;
   }
@@ -72,6 +74,12 @@ function App() {
   }
 
   function resetPokemon() {
+    console.log(generations.filter((g) => g.enabled));
+    if (generations.filter((g) => g.enabled).length <= 0) {
+      for (let g of generations) {
+        toggleGeneration(g.generation - 1); //idk why setting generations to initialGens causes the app to hang but ok
+      }
+    }
     setLoading(true);
     setPokeballs(slots);
     setPokemon([]);
@@ -98,14 +106,9 @@ function App() {
     setPokemon(arr);
   }
 
-  function gameOver() {
-    setPokeballs(slots);
-    resetPokemon();
-  }
-
   function attemptToCatch(mon) {
     if (mon.caught) {
-      gameOver();
+      resetPokemon();
     } else {
       mon.caught = true;
       setPokeballs(pokeballs - 1);
@@ -117,14 +120,10 @@ function App() {
     setSlots(e.target.value);
   }
 
-  function toggleGeneration(gen) {
-    if (generations.some((g) => g.generation === gen.generation)) {
-      setGenerations(
-        generations.filter((g) => g.generation !== gen.generation)
-      );
-    } else {
-      setGenerations([...generations, gen]);
-    }
+  function toggleGeneration(index) {
+    let newGens = [...generations];
+    newGens[index].enabled = !newGens[index].enabled;
+    setGenerations(newGens);
   }
 
   // fetch pokemon on component mount
@@ -134,7 +133,10 @@ function App() {
 
   return (
     <div>
-      <GenerationInput toggleGeneration={toggleGeneration} />
+      <GenerationInput
+        generations={generations}
+        toggleGeneration={toggleGeneration}
+      />
 
       <div>Pokeballs Left: {pokeballs}</div>
       <label htmlFor="cards">Number of Pokemon:</label>
