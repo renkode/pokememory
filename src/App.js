@@ -1,42 +1,79 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import GenerationInput from "./components/GenerationInput";
+import LoadingCard from "./components/LoadingCard";
 import PokemonCard from "./components/PokemonCard";
 
-function getRandomInt(max) {
-  // between 1 and max (inclusive of both)
-  return Math.ceil(Math.random() * max);
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function generateIds(slots, range) {
-  let ids = [];
-  while (ids.length < slots) {
-    let id = getRandomInt(range);
-    if (!ids.includes(id)) ids.push(id);
+function findMinAndMax(arr) {
+  let min = 898;
+  let max = 1;
+  for (let i = 0; i < arr.length; i++) {
+    if (min > arr[i].min) min = arr[i].min;
+    if (max < arr[i].max) max = arr[i].max;
   }
-  return ids;
+  console.log(`min:  ${min}, max: ${max}`);
+  return { min, max };
 }
 
 function App() {
-  const [score, setScore] = useState(0);
+  const [pokeballs, setPokeballs] = useState(6);
   const [slots, setSlots] = useState(6);
   const [pokemon, setPokemon] = useState([]);
+  const [generations, setGenerations] = useState([
+    { generation: 1, min: 1, max: 151 },
+    { generation: 2, min: 152, max: 251 },
+    { generation: 3, min: 252, max: 386 },
+    { generation: 4, min: 387, max: 493 },
+    { generation: 5, min: 494, max: 649 },
+    { generation: 6, min: 650, max: 721 },
+    { generation: 7, min: 722, max: 809 },
+    { generation: 8, min: 810, max: 898 },
+  ]);
+  const [loading, setLoading] = useState(true);
+
+  function isInGenerationsRange(num) {
+    let isIncluded = false;
+    generations.forEach((gen) => {
+      if (num >= gen.min && num <= gen.max) isIncluded = true;
+    });
+    return isIncluded;
+  }
+
+  function generateIds(slots, min, max) {
+    let ids = [];
+    while (ids.length < slots) {
+      let id = getRandomIntInclusive(min, max);
+      if (!ids.includes(id) && isInGenerationsRange(id)) ids.push(id);
+    }
+    return ids;
+  }
 
   async function fetchPokemon() {
-    const ids = generateIds(slots, 898);
+    const idRange = findMinAndMax(generations);
+    const ids = generateIds(slots, idRange.min, idRange.max);
     let promises = [];
 
     ids.forEach((id) => {
       promises.push(axios.get(`https://pokeapi.co/api/v2/pokemon/${id}/`));
     });
 
+    // promise.all does not directly return data
     Promise.all(promises).then((responses) => {
       setPokemon([...responses.map((response) => response.data)]);
+      setLoading(false);
     });
   }
 
   function resetPokemon() {
-    setScore(0);
+    setLoading(true);
+    setPokeballs(slots);
     setPokemon([]);
     fetchPokemon();
   }
@@ -62,22 +99,32 @@ function App() {
   }
 
   function gameOver() {
-    setScore(0);
+    setPokeballs(slots);
     resetPokemon();
   }
 
-  function attemptToCatch(pokemon) {
-    if (pokemon.caught) {
+  function attemptToCatch(mon) {
+    if (mon.caught) {
       gameOver();
     } else {
-      pokemon.caught = true;
-      setScore(score + 1);
+      mon.caught = true;
+      setPokeballs(pokeballs - 1);
       shufflePokemon();
     }
   }
 
   function handleChange(e) {
     setSlots(e.target.value);
+  }
+
+  function toggleGeneration(gen) {
+    if (generations.some((g) => g.generation === gen.generation)) {
+      setGenerations(
+        generations.filter((g) => g.generation !== gen.generation)
+      );
+    } else {
+      setGenerations([...generations, gen]);
+    }
   }
 
   // fetch pokemon on component mount
@@ -87,10 +134,12 @@ function App() {
 
   return (
     <div>
-      <div>Score: {score}</div>
-      <label for="cards">Number of Pokemon:</label>
+      <GenerationInput toggleGeneration={toggleGeneration} />
+
+      <div>Pokeballs Left: {pokeballs}</div>
+      <label htmlFor="cards">Number of Pokemon:</label>
       <select name="cards" id="cards" onChange={handleChange}>
-        <option value="6" selected>
+        <option value="6" defaultValue>
           6
         </option>
         <option value="12">12</option>
@@ -101,6 +150,11 @@ function App() {
       <button onClick={resetPokemon}>Reset</button>
 
       <div className="poke-wrapper">
+        {loading &&
+          Array.from({ length: slots }).map((_, index) => (
+            <LoadingCard key={index} />
+          ))}
+
         {pokemon.map((mon, index) => {
           return (
             <PokemonCard

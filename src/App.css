@@ -5,7 +5,8 @@
   grid-template-columns: repeat(auto-fill, 150px);
 }
 
-.card {
+.card,
+.loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,6 +15,11 @@
   border-radius: 10%;
   padding: 4px;
   transition: 0.2s;
+}
+
+.loading {
+  height: 163px;
+  justify-content: center;
 }
 
 .card:hover {
