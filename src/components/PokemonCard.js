@@ -1,5 +1,5 @@
 import "../App.css";
-import React from "react";
+import React, { memo } from "react";
 
 const PokemonCard = (props) => {
   function capitalize(str) {
@@ -18,9 +18,9 @@ const PokemonCard = (props) => {
         src={props.pokemon.sprites.front_default}
         alt={props.pokemon.name}
       />
-      <span>{capitalize(props.pokemon.name)}</span>
+      <span className="name">{capitalize(props.pokemon.name)}</span>
     </div>
   );
 };
 
-export default PokemonCard;
+export default memo(PokemonCard);

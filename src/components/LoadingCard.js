@@ -1,5 +1,5 @@
 import "../App.css";
-import React from "react";
+import React, { memo } from "react";
 import Loader from "react-loader-spinner";
 
 const LoadingCard = () => {
@@ -10,4 +10,4 @@ const LoadingCard = () => {
   );
 };
 
-export default LoadingCard;
+export default memo(LoadingCard);
