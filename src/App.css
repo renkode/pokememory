@@ -53,17 +53,23 @@
   flex-direction: row;
 }
 
+.mainButtons,
 .buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
+.mainButtons {
+  width: 300px;
+}
+
 .resetBtn,
-.closeBtn {
+.closeBtn,
+.optionsBtn {
   height: 26px;
   width: 45%;
-  margin-top: 6px;
+  margin: 6px 0px;
   border: 0px;
   color: white;
 }
@@ -77,11 +83,13 @@
   background-color: rgb(197, 31, 25);
 }
 
-.closeBtn {
+.closeBtn,
+.optionsBtn {
   background-color: rgb(65, 62, 235);
   transition-duration: 0.2s;
 }
 
-.closeBtn:hover {
+.closeBtn:hover,
+.optionsBtn:hover {
   background-color: rgb(40, 38, 175);
 }

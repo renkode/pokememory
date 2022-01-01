@@ -159,10 +159,18 @@ function App() {
 
   return (
     <div>
-      <button onClick={openModal}>Options</button>
-      <button className="resetBtn" onClick={resetPokemon}>
-        Reset
-      </button>
+      <p>
+        Goal is to catch (click) every Pokemon once. Gotta catch 'em all! WIP
+      </p>
+      <div className="mainButtons">
+        <button className="optionsBtn" onClick={openModal}>
+          Options
+        </button>
+        <button className="resetBtn" onClick={resetPokemon}>
+          Reset
+        </button>
+      </div>
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
