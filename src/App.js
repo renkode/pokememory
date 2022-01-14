@@ -6,6 +6,8 @@ import PokemonCard from "./components/PokemonCard";
 import Modal from "react-modal";
 import Options from "./components/Options";
 import Confetti from "react-confetti";
+import pokeball from "./assets/pokeball.png";
+import ReactCardFlip from "react-card-flip";
 
 Modal.setAppElement("#root");
 
@@ -45,6 +47,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [currentModal, setCurrentModal] = useState("options");
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   function findGenerationsRange() {
     // find lowest min and highest max out of all generations to reduce scope of RNG
@@ -124,7 +127,11 @@ function App() {
         arr[currentIndex],
       ];
     }
-    setPokemon(arr);
+    setIsFlipped(true);
+    setTimeout(() => {
+      setPokemon(arr);
+      setIsFlipped(false);
+    }, 750);
   }
 
   function attemptToCatch(mon) {
@@ -227,9 +234,16 @@ function App() {
         {modal}
       </Modal>
 
-      <div>Pokeballs Left: {pokeballs}</div>
       <div className="poke-wrapper">
-        <div className="poke-content">
+        <div
+          className="poke-content"
+          style={{
+            maxWidth:
+              (loading && slots >= 24) || pokemon.length >= 24
+                ? "1400px"
+                : "1000px",
+          }}
+        >
           {loading &&
             Array.from({ length: slots }).map((_, index) => (
               <LoadingCard key={index} />
@@ -237,14 +251,29 @@ function App() {
 
           {pokemon.map((mon, index) => {
             return (
-              <PokemonCard
+              <ReactCardFlip
                 key={index}
-                pokemon={mon}
-                attemptToCatch={attemptToCatch}
-              />
+                isFlipped={isFlipped}
+                flipDirection="horizontal"
+                containerClassName={`${isFlipped ? "" : "hoverable"}`}
+              >
+                <PokemonCard
+                  key={index}
+                  pokemon={mon}
+                  attemptToCatch={attemptToCatch}
+                  isFlipped={isFlipped}
+                />
+
+                <div className="flipside" />
+              </ReactCardFlip>
             );
           })}
         </div>
+      </div>
+      <div className="pokeballs">
+        {Array.from({ length: pokeballs }).map((_, index) => (
+          <img key={index} src={pokeball} alt="Pokeball" />
+        ))}
       </div>
     </div>
   );
