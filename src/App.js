@@ -1,10 +1,11 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import GenerationInput from "./components/GenerationInput";
 import LoadingCard from "./components/LoadingCard";
 import PokemonCard from "./components/PokemonCard";
 import Modal from "react-modal";
+import Options from "./components/Options";
+import Confetti from "react-confetti";
 
 Modal.setAppElement("#root");
 
@@ -42,6 +43,7 @@ function App() {
   const [pokemon, setPokemon] = useState([]);
   const [generations, setGenerations] = useState(gens);
   const [loading, setLoading] = useState(true);
+  const [currentModal, setCurrentModal] = useState("options");
   const [modalIsOpen, setIsOpen] = useState(false);
 
   function findGenerationsRange() {
@@ -92,7 +94,6 @@ function App() {
 
   function resetPokemon() {
     // if no generations are enabled, reset them all to true
-    console.log(generations.filter((g) => g.enabled));
     if (generations.filter((g) => g.enabled).length <= 0) {
       for (let g of generations) {
         toggleGeneration(g.generation - 1); //idk why setting generations to initialGens causes the app to hang but ok
@@ -102,6 +103,8 @@ function App() {
     setPokeballs(slots);
     setPokemon([]);
     fetchPokemon();
+    setCurrentModal("");
+    if (modalIsOpen) closeModal();
   }
 
   function shufflePokemon() {
@@ -129,8 +132,12 @@ function App() {
       resetPokemon();
     } else {
       mon.caught = true;
-      setPokeballs(pokeballs - 1);
-      shufflePokemon();
+      setPokeballs(pokeballs - 1); // THIS IS ASYNC!!!!!!
+      if (pokeballs <= 1) {
+        openModal("victory");
+      } else {
+        shufflePokemon();
+      }
     }
   }
 
@@ -144,7 +151,8 @@ function App() {
     setGenerations(newGens);
   }
 
-  function openModal() {
+  function openModal(type) {
+    setCurrentModal(type);
     setIsOpen(true);
   }
 
@@ -157,13 +165,52 @@ function App() {
     fetchPokemon();
   }, []);
 
+  let modal = null;
+  switch (currentModal) {
+    case "victory":
+      modal = (
+        <div>
+          You caught them all!
+          <button
+            className="optionsBtn"
+            onClick={() => {
+              openModal("options");
+            }}
+          >
+            Options
+          </button>
+          <button className="resetBtn" onClick={resetPokemon}>
+            Reset
+          </button>
+        </div>
+      );
+      break;
+    default:
+      modal = (
+        <Options
+          generations={generations}
+          toggleGeneration={toggleGeneration}
+          slots={slots}
+          handleChange={handleChange}
+          resetPokemon={resetPokemon}
+          closeModal={closeModal}
+        />
+      );
+  }
+
   return (
     <div>
+      {currentModal === "victory" && <Confetti />}
       <p>
         Goal is to catch (click) every Pokemon once. Gotta catch 'em all! WIP
       </p>
       <div className="mainButtons">
-        <button className="optionsBtn" onClick={openModal}>
+        <button
+          className="optionsBtn"
+          onClick={() => {
+            openModal("options");
+          }}
+        >
           Options
         </button>
         <button className="resetBtn" onClick={resetPokemon}>
@@ -177,49 +224,27 @@ function App() {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <GenerationInput
-          generations={generations}
-          toggleGeneration={toggleGeneration}
-        />
-
-        <label htmlFor="slots">
-          <h4 style={{ marginTop: "4px", marginBottom: "4px" }}>
-            Number of Pokemon:
-          </h4>
-        </label>
-        <select id="slots" defaultValue={slots} onChange={handleChange}>
-          <option value="6">6</option>
-          <option value="12">12</option>
-          <option value="18">18</option>
-          <option value="24">24</option>
-          <option value="30">30</option>
-        </select>
-        <div className="buttons">
-          <button className="resetBtn" onClick={resetPokemon}>
-            Reset
-          </button>
-          <button className="closeBtn" onClick={closeModal}>
-            Close
-          </button>
-        </div>
+        {modal}
       </Modal>
 
       <div>Pokeballs Left: {pokeballs}</div>
       <div className="poke-wrapper">
-        {loading &&
-          Array.from({ length: slots }).map((_, index) => (
-            <LoadingCard key={index} />
-          ))}
+        <div className="poke-content">
+          {loading &&
+            Array.from({ length: slots }).map((_, index) => (
+              <LoadingCard key={index} />
+            ))}
 
-        {pokemon.map((mon, index) => {
-          return (
-            <PokemonCard
-              key={index}
-              pokemon={mon}
-              attemptToCatch={attemptToCatch}
-            />
-          );
-        })}
+          {pokemon.map((mon, index) => {
+            return (
+              <PokemonCard
+                key={index}
+                pokemon={mon}
+                attemptToCatch={attemptToCatch}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );
