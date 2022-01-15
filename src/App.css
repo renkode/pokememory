@@ -1,7 +1,7 @@
 .poke-wrapper {
   overflow: hidden;
   position: relative;
-  padding: 1rem;
+  padding: 3rem 1rem;
   border: 1px solid black;
 }
 
@@ -66,6 +66,15 @@
 .flipside {
   background: linear-gradient(#dc3d24 48%, #232b2b 49% 51%, #fff 52%);
   border: 4px solid #232b2b;
+}
+
+.flipside::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border: 4px solid #232b2b;
+  border-radius: 50%;
 }
 
 .name {

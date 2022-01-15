@@ -6,7 +6,6 @@ const GenerationInput = (props) => {
     <div className="checkboxes">
       <h4 style={{ marginTop: "0px", marginBottom: "4px" }}>Generations:</h4>
       <div className="checkbox">
-        {" "}
         <input
           type="checkbox"
           id="gen1"
@@ -17,7 +16,6 @@ const GenerationInput = (props) => {
       </div>
 
       <div className="checkbox">
-        {" "}
         <input
           type="checkbox"
           id="gen2"
@@ -28,7 +26,6 @@ const GenerationInput = (props) => {
       </div>
 
       <div className="checkbox">
-        {" "}
         <input
           type="checkbox"
           id="gen3"
@@ -39,7 +36,6 @@ const GenerationInput = (props) => {
       </div>
 
       <div className="checkbox">
-        {" "}
         <input
           type="checkbox"
           id="gen4"
@@ -50,7 +46,6 @@ const GenerationInput = (props) => {
       </div>
 
       <div className="checkbox">
-        {" "}
         <input
           type="checkbox"
           id="gen5"

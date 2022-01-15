@@ -48,6 +48,7 @@ function App() {
   const [currentModal, setCurrentModal] = useState("options");
   const [modalIsOpen, setIsOpen] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [enableFlip, setEnableFlip] = useState(true);
 
   function findGenerationsRange() {
     // find lowest min and highest max out of all generations to reduce scope of RNG
@@ -127,15 +128,20 @@ function App() {
         arr[currentIndex],
       ];
     }
-    setIsFlipped(true);
-    setTimeout(() => {
+    if (enableFlip) {
+      setIsFlipped(true);
+      setTimeout(() => {
+        setPokemon(arr);
+        setIsFlipped(false);
+      }, 750);
+    } else {
       setPokemon(arr);
-      setIsFlipped(false);
-    }, 750);
+    }
   }
 
   function attemptToCatch(mon) {
     if (mon.caught) {
+      //openModal("gameover");
       resetPokemon();
     } else {
       mon.caught = true;
@@ -148,7 +154,7 @@ function App() {
     }
   }
 
-  function handleChange(e) {
+  function handleSlots(e) {
     setSlots(e.target.value);
   }
 
@@ -156,6 +162,10 @@ function App() {
     let newGens = [...generations];
     newGens[index].enabled = !newGens[index].enabled;
     setGenerations(newGens);
+  }
+
+  function toggleFlipAnimation() {
+    enableFlip ? setEnableFlip(false) : setEnableFlip(true);
   }
 
   function openModal(type) {
@@ -167,7 +177,7 @@ function App() {
     setIsOpen(false);
   }
 
-  // fetch pokemon on component mount
+  // fetch pokemon on app mount
   useEffect(() => {
     fetchPokemon();
   }, []);
@@ -198,9 +208,11 @@ function App() {
           generations={generations}
           toggleGeneration={toggleGeneration}
           slots={slots}
-          handleChange={handleChange}
+          handleSlots={handleSlots}
           resetPokemon={resetPokemon}
           closeModal={closeModal}
+          enableFlip={enableFlip}
+          toggleFlipAnimation={toggleFlipAnimation}
         />
       );
   }

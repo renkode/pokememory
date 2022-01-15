@@ -18,7 +18,7 @@ const Options = (props) => {
       <select
         id="slots"
         defaultValue={props.slots}
-        onChange={props.handleChange}
+        onChange={props.handleSlots}
       >
         <option value="6">6</option>
         <option value="12">12</option>
@@ -26,6 +26,18 @@ const Options = (props) => {
         <option value="24">24</option>
         <option value="30">30</option>
       </select>
+
+      <h4 style={{ marginTop: "4px", marginBottom: "4px" }}>Miscellaneous:</h4>
+      <div style={{ marginTop: "4px", marginBottom: "4px" }}>
+        <input
+          type="checkbox"
+          id="enableFlip"
+          onChange={props.toggleFlipAnimation}
+          checked={props.enableFlip}
+        />
+        <label htmlFor="enableFlip"> Enable flip animation</label>
+      </div>
+
       <div className="buttons">
         <button className="resetBtn" onClick={props.resetPokemon}>
           Reset
