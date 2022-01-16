@@ -63,6 +63,7 @@ function App() {
   }
 
   function isInGenerationsRange(num) {
+    // check if id is within range of an enabled generation
     let isIncluded = false;
     generations.forEach((gen) => {
       if (gen.enabled && num >= gen.min && num <= gen.max) isIncluded = true;
@@ -71,7 +72,6 @@ function App() {
   }
 
   function generateIds(slots, min, max) {
-    // generate ids that are within range of an enabled generation
     let ids = [];
     while (ids.length < slots) {
       let id = getRandomIntInclusive(min, max);
@@ -90,10 +90,12 @@ function App() {
     });
 
     // promise.all does not directly return data
-    Promise.all(promises).then((responses) => {
-      setPokemon([...responses.map((response) => response.data)]);
-      setLoading(false);
-    });
+    Promise.all(promises)
+      .then((responses) => {
+        setPokemon([...responses.map((response) => response.data)]);
+        setLoading(false);
+      })
+      .catch((error) => alert(error));
   }
 
   function resetPokemon() {
