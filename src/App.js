@@ -184,21 +184,44 @@ function App() {
 
   let modal = null;
   switch (currentModal) {
+    case "rules":
+      modal = (
+        <div style={{ maxWidth: "300px" }}>
+          <p>Gotta catch 'em all!</p>
+          <p>
+            A random set of Pokemon will appear. To win, you must catch (click)
+            on each of them only once. Each subsequent catch will shuffle their
+            positions.
+          </p>
+          <p>
+            If you catch a duplicate, it's game over! A new set of wild Pokemon
+            will present themselves for you to catch and memorize.
+          </p>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <button className="closeBtn" onClick={closeModal}>
+              Close
+            </button>
+          </div>
+        </div>
+      );
+      break;
     case "victory":
       modal = (
-        <div>
+        <div className="modal">
           You caught them all!
-          <button
-            className="optionsBtn"
-            onClick={() => {
-              openModal("options");
-            }}
-          >
-            Options
-          </button>
-          <button className="resetBtn" onClick={resetPokemon}>
-            Reset
-          </button>
+          <div className="buttons">
+            <button
+              className="optionsBtn"
+              onClick={() => {
+                openModal("options");
+              }}
+            >
+              Options
+            </button>
+            <button className="resetBtn" onClick={resetPokemon}>
+              Reset
+            </button>
+          </div>
         </div>
       );
       break;
@@ -218,24 +241,8 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="wrapper">
       {currentModal === "victory" && <Confetti />}
-      <p>
-        Goal is to catch (click) every Pokemon once. Gotta catch 'em all! WIP
-      </p>
-      <div className="mainButtons">
-        <button
-          className="optionsBtn"
-          onClick={() => {
-            openModal("options");
-          }}
-        >
-          Options
-        </button>
-        <button className="resetBtn" onClick={resetPokemon}>
-          Reset
-        </button>
-      </div>
 
       <Modal
         isOpen={modalIsOpen}
@@ -245,6 +252,42 @@ function App() {
       >
         {modal}
       </Modal>
+
+      {/* {      <div className="pokeballs">
+        {Array.from({ length: pokeballs }).map((_, index) => (
+          <img key={index} src={pokeball} alt="Pokeball" />
+        ))}
+      </div>} */}
+
+      <div className="buttons">
+        <div className="mainButtons">
+          <button
+            className="optionsBtn"
+            onClick={() => {
+              openModal("rules");
+            }}
+          >
+            Rules
+          </button>
+
+          <button
+            className="optionsBtn"
+            onClick={() => {
+              openModal("options");
+            }}
+          >
+            Options
+          </button>
+          <button className="resetBtn" onClick={resetPokemon}>
+            Reset
+          </button>
+        </div>
+        <div className="pokeballs">
+          <img src={pokeball} alt="Pokeball" />x {pokeballs}
+        </div>
+      </div>
+
+      <hr />
 
       <div className="poke-wrapper">
         <div
@@ -281,11 +324,6 @@ function App() {
             );
           })}
         </div>
-      </div>
-      <div className="pokeballs">
-        {Array.from({ length: pokeballs }).map((_, index) => (
-          <img key={index} src={pokeball} alt="Pokeball" />
-        ))}
       </div>
     </div>
   );

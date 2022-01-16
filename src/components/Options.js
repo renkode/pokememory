@@ -39,11 +39,11 @@ const Options = (props) => {
       </div>
 
       <div className="buttons">
-        <button className="resetBtn" onClick={props.resetPokemon}>
-          Reset
-        </button>
         <button className="closeBtn" onClick={props.closeModal}>
           Close
+        </button>
+        <button className="resetBtn" onClick={props.resetPokemon}>
+          Reset
         </button>
       </div>
     </div>
