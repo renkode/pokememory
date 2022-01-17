@@ -243,7 +243,15 @@ function App() {
   }
 
   return (
-    <div className="wrapper">
+    <div
+      className="wrapper"
+      style={{
+        maxWidth:
+          (loading && slots >= 24) || pokemon.length >= 24
+            ? "1400px"
+            : "1000px",
+      }}
+    >
       {currentModal === "victory" && <Confetti />}
 
       <Modal

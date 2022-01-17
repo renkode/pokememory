@@ -3,19 +3,22 @@ body {
   padding: 0;
   box-sizing: border-box;
   min-height: 100vh;
+  margin: auto;
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin: auto;
-  flex-wrap: wrap;
+}
+
+.wrapper {
+  max-width: 1000px;
+  width: 90vw;
 }
 
 .poke-wrapper {
-  overflow: hidden;
   position: relative;
   padding: 3rem 1rem;
   border: 1px solid black;
-  max-width: 1000px;
   margin: 0.6rem auto;
   margin-bottom: 5rem;
 }
@@ -24,7 +27,7 @@ body {
   margin: auto;
   position: relative;
   display: grid;
-  gap: 15px;
+  gap: 10px;
   max-width: 1000px;
   grid-template-columns: repeat(auto-fill, 150px);
   justify-content: space-evenly;
